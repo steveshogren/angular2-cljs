@@ -1,0 +1,15 @@
+/resources/public/node_modules
+/target
+/lib
+/classes
+/checkouts
+pom.xml
+*.jar
+*.class
+/.lein-*
+profiles.clj
+/.env
+*.log
+node_modules/
+node_modules/
+node_modules/
