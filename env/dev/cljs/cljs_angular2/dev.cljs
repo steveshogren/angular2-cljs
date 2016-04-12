@@ -4,15 +4,18 @@
 
 (enable-console-print!)
 
+(def state (atom []))
+
 (defn reload []
-  (core/init!)
+  (core/init! state)
   ((.. js/ng -platform -browser -bootstrap)
    (.-AppComponent (.-app js/window))))
+
 
 (figwheel/watch-and-reload :websocket-url "ws://localhost:3449/figwheel-ws"
                            :on-jsload reload)
 
-(core/init!)
+(core/init! state)
 (defonce only-attach-listener-once
   (.addEventListener js/document "DOMContentLoaded"
                      (fn []

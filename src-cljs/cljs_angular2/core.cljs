@@ -11,16 +11,24 @@
    (or (.-app js/window)
        (set! (.-app js/window) #js {})))
 
-(defn add [x y ] (+ x y))
-
-(defn init! []
+(defn init!
+  ([] (init! (atom [])))
+  ([heroes]
   (let [app (get-app)
         c (.Component (.-core js/ng)
                       #js {:selector "my-app"
                            :template (html [:div
                                             [:h1 "My first Angular 2 app"]
-                                            [:div [:h2 "test"]]
-                                            [:div [:h3 "test2"]]])})
-        c (.Class c #js {:constructor (fn [])})]
-    (set! (.-AppComponent app) c)))
-
+                                            [:div [:h2 "Todo:"]]
+                                            "
+<input #newHero (keyup.enter)=\"addHero(newHero.value); newHero.value='' \" >
+<button (click)=\"addHero(newHero.value); newHero.value='' \">Add</button>
+<ul><li *ngFor=\"#hero of heroes()\">{{hero}}</li></ul>
+"
+                                            ])})
+        c (.Class c #js {:constructor (fn [])
+                         :addHero (fn [hero]
+                                    (swap! heroes (fn [s] (conj s hero))))
+                         :heroes (fn [] @heroes)
+                         })]
+    (set! (.-AppComponent app) c))))
