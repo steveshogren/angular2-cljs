@@ -4,33 +4,12 @@
 
 (enable-console-print!)
 
-(def state (atom []))
-
-(defn reload []
-  (core/init! state)
+(defn mount-component []
   ((.. js/ng -platform -browser -bootstrap)
    (.-AppComponent (.-app js/window))))
 
-
 (figwheel/watch-and-reload :websocket-url "ws://localhost:3449/figwheel-ws"
-                           :on-jsload reload)
+                           :on-jsload mount-component)
 
-(core/init! state)
 (defonce only-attach-listener-once
-  (.addEventListener js/document "DOMContentLoaded"
-                     (fn []
-                       ((.. js/ng -platform -browser -bootstrap)
-                        (.-AppComponent (core/get-app))))))
-
-
-;; (function(app) {
-;;   document.addEventListener('DOMContentLoaded', function() {
-;;     ng.platform.browser.bootstrap(app.AppComponent);
-;;   });
-;; })(window.app || (window.app = {}));
-
-;; (defonce af
-;;   (let [x (clj->js {})]
-;;     (set! (.. x -name) (clj->js {}))
-;;     (set! (.. x -name -horse) js/alert)
-;;     ((.. x -name -horse) "HELLO")))
+  (.addEventListener js/document "DOMContentLoaded" mount-component))
